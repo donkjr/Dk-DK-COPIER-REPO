@@ -83,7 +83,8 @@ Version Control
                   Subsequent assertions of the shutter release will take pictures with the app
                   The app takes about 3 seconds to take the picture.
                   The code was modified to automate the above setup and activation                  
-  7/25 Git repostitory testing 
+  7/25 Git  Repostitory testing 
+            Made a change
  Known Bugs-----
   Open   7/14:  If the tray is not sensed you cannot enter the test state. This is proper operation for all other states.
                 You should be able to enter the Test state irrespective of sensor conditions. 
