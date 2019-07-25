@@ -134,8 +134,8 @@ Setting up:
             Turn on the controller, the lamp will blink as the controller initializes then stay on 
             The shutter will connect to the phone just before the lamp blinks
             Mount and align the phone by manually inserting the target slide into the projector
-            Open the phones camera app and verify that the shutter works by pressing the shutter release
-            Note: the shutter will shut down after xx seconds of inactivity. 
+            Open the phones camera app and verify that the shutter works by pressing the shutter release on the BT shutter
+            Note: the shutter will shut down after xx seconds of inactivity or when the phone disconnects BT.
             To reconnect the shutter press and hold the shutter button for 3 sec to reconnect.
             The shutter will blink every 5-6 seconds while connected
             Insure that the slide tray is properly in the gear track and the arm is fully in flush against the front of the tray

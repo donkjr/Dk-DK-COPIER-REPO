@@ -59,4 +59,5 @@ SLIDEARMHOMESW:   Indicates that the slide arm is fully inserted into the projec
                   This sensor is used to detect jams by checking this switch after the required time for the slide arm to cycle
 
 ERRORS:
-TRAY MISSING: the controller detected that a slide tray is not installed  
+TRAY MISSING: the controller detected that a slide tray is not installed 
+TRAY JAM: Indicates that something inhibited the slide arm from inserting the slide into the projector within the expected time. 
