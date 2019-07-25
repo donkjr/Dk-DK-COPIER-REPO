@@ -83,17 +83,20 @@ Version Control
                   Subsequent assertions of the shutter release will take pictures with the app
                   The app takes about 3 seconds to take the picture.
                   The code was modified to automate the above setup and activation                  
-  7/25 Git  Repostitory testing 
-            Made a change
+  7/25 RLS 2.2    
+                  Changes are now trackable. Built code in GIT Repository Dk-DK-REPO
+                  Fixed Bugs.
+                    Turn everything off when entering the test mode
+                    Contamination in the display just after the version #. Missing clear.Display()
+                    If the tray is not sensed you cannot enter the test state. This is proper operation for all other states.
+                    You should be able to enter the Test state irrespective of sensor conditions. 
+                    After all the test state tests the sensors!      
  Known Bugs-----
-  Open   7/14:  If the tray is not sensed you cannot enter the test state. This is proper operation for all other states.
-                You should be able to enter the Test state irrespective of sensor conditions. 
-                After all the test state tests the sensors!  
-                The shutter activates as the relay turns off therefore the shutter wait time can be shortened
-                If the controller it on and the shutter is already connected when it initializes it takes a picture.
-                Turn off the BT by aserting a long shutter release, of leave this alone? 
-                Turn everything off when entering the test mode
-                Contamination in the display just after the version #
+  Open   7/14:    
+                  The shutter activates as the relay turns off therefore the shutter wait time can be shortened
+                  If the controller it on and the shutter is already connected when it initializes it takes a picture.
+                  Turn off the BT by aserting a long shutter release, or leave this alone? 
+                  
  **************************************************************************/
 
 // ----------------------- INCLUDED LIBRARIES -------------------
@@ -103,7 +106,7 @@ Version Control
 
 #define SCREEN_WIDTH 128     // OLED display width, in pixels
 #define SCREEN_HEIGHT 64     // OLED display height, in pixels
-#define VERSION 2.1          // version # for displaying
+#define VERSION 2.2          // version # for displaying
 
 // ----- Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)-------
 #define OLED_RESET     -1  // Reset pin # (or -1 if sharing Arduino reset pin). [Was set to 4 which is being used by tray sise sw]
@@ -294,9 +297,9 @@ void setup()
 { 
   Serial.begin(57600);
   //Turn these outputs off
-  digitalWrite(SLIDEADVANCERELAY,true);
-  digitalWrite(SHUTTERRELAY,true);
-  digitalWrite (LEDLAMPRELAY, true); // turn off LED lamp
+  digitalWrite(SLIDEADVANCERELAY,HIGH);
+  digitalWrite(SHUTTERRELAY,HIGH);
+  digitalWrite (LEDLAMPRELAY, HIGH); // turn off LED lamp
   Serial.println (versionMsg); // opening message
   Serial.println(F(".......Initializing Controller......."));
   //Turn off the BT shutter??
@@ -332,9 +335,11 @@ void setup()
   display.display(); // write it to display
   // end of intial messages
   delay (4000);
+  
   //Show the display buffer on the screen. You MUST call display() after
   Serial.println(F("Formatting OLED Display Area"));
   //Set up the main OLED display format
+  display.clearDisplay();             // Cleared bug 
   display.setTextSize(2);             // Draw 2X-scale text
   display.setTextColor(WHITE);
   display.setCursor(0,0);
@@ -343,6 +348,7 @@ void setup()
   display.print(F("Slide#: ")); 
   display.setCursor(0,32);
   display.display();  //write it to the screen
+  
   int state = WAIT; // initialize state 
   // Initialize the shutter
   // Once paired the BT shutter can be activated by pushing and holding the shutter release 
@@ -412,18 +418,16 @@ void loop()
                 {//if not in autmode check for manual mode and set that state
                  state = MANCYCLE; // if the Auto/manual switch is Manual set the manual state
                 }
-              if(!digitalRead (DEBUGSW))
-                {//if the debug switch is on go to test state
-                  state=TEST;
-                }       
-              
               }  //Exit here when run button pushed 
               delay(debounceDelay1); // wait for switch to stop bouncing
               if(digitalRead(TRAYPRESENTSW))
               {//if tray is not inserted go to tray error state
                 state = INSERTTRAY;
               }
-              
+              if(!digitalRead (DEBUGSW))
+                {//if the debug switch is on go to test state
+                  state=TEST;
+                }  
               
               Serial.print(F("Going to mode: "));
               Serial.println(state); 
@@ -546,27 +550,27 @@ void loop()
         delay(debounceDelay1); // wait for switch to stop bouncing
         
     break;
-    
+    // Insert the tray error processing state
     case INSERTTRAY: 
-     Serial.println(F("ERROR: Insert a Tray"));
-     modeDisplay = errorModeMsg;//display error mode 
-     statusDisplayLine1 = insertTrayMsg;
-     statusDisplayLine2 = pushRunMsg;
-     updateDisplay();
-     while (digitalRead(RUNPB)== HIGH)
-          {
-          //wait for run button to be pushed to exit to wait state
-          }
-        delay(debounceDelay1); // wait for switch to stop bouncing
-     state = WAIT;
+         Serial.println(F("ERROR: Insert a Tray"));
+         modeDisplay = errorModeMsg;//display error mode 
+         statusDisplayLine1 = insertTrayMsg;
+         statusDisplayLine2 = pushRunMsg;
+         updateDisplay();
+         while (digitalRead(RUNPB)== HIGH)
+              {
+              //wait for run button to be pushed to exit to wait state
+              }
+            delay(debounceDelay1); // wait for switch to stop bouncing
+         state = WAIT;
+        break;
+        //NOT YET IMPLEMENTED
+        case SETSLIDENO:
+           // display "Remove/relace tray"
+          // not implemented
+          state = WAIT;
     break;
-    
-    case SETSLIDENO:
-       // display "Remove/relace tray"
-      // not implemented
-      state = WAIT;
-    break;
-    
+    // Test state runs simple tests on the hardware
     case TEST:
         Serial.println(F("TEST MODE"));
         modeDisplay = testModeMsg; // display the TEST mode
@@ -579,8 +583,13 @@ void loop()
         //Serial.println(F("Push RUN to continue"));
         while (digitalRead(RUNPB))
           {
-           // wait for run to continue       
+           // wait for run pb to continue       
           }
+        // initialize for testing
+        //BUG FIX: Turn these outputs off Bug 
+        digitalWrite(SLIDEADVANCERELAY,HIGH);
+        digitalWrite(SHUTTERRELAY,HIGH);
+        digitalWrite (LEDLAMPRELAY, HIGH); // turn off LED lamp
         Serial.println(F("Testing OLED Display ...."));
         testdrawline();
         testdrawchar(); 
@@ -589,7 +598,7 @@ void loop()
         statusDisplayLine2 = runstopsMsg; //display the "Run 2 stop" Message
         updateDisplay();
         Serial.println(F("OLED Testing Complete"));
- // ----------- Input port tests -------------------       
+        // ----------- Input port tests -------------------       
         Serial.println(F("Read 4 Main Input Ports ..."));
         Serial.println(F("Logic: 0 = ON, 1 = OFF"));
         Serial.println(F("Note: The Run button & Diag switch works if you got here!"));
@@ -654,7 +663,7 @@ void loop()
            displayInputPorts(); // display input ports on the OLED
         }//Run PB was pushed
         delay(debounceDelay1); // wait for switch to stop bouncing
- // ............. RELAYS TEST .................
+        // ............. RELAYS TEST .................
         Serial.println(F("Test Relays ....."));
         //Serial.println(F("Test Lamp Relay"));
         display.clearDisplay();
