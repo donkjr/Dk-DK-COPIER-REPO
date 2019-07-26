@@ -91,6 +91,10 @@ Version Control
                     If the tray is not sensed you cannot enter the test state. This is proper operation for all other states.
                     You should be able to enter the Test state irrespective of sensor conditions. 
                     After all the test state tests the sensors!      
+ 7/25 Playing with N++
+					Editing in N++
+					Again editing
+ 
  Known Bugs-----
   Open   7/14:    
                   The shutter activates as the relay turns off therefore the shutter wait time can be shortened
