@@ -427,6 +427,11 @@ void loop()
                 break; //   
               }
           }//end of cycle
+          // cycle one more time without taking photo to eject the tray
+          digitalWrite(SLIDEADVANCERELAY,LOW); // turn the slide arms relay on
+          delay (slideArmCyclePulse);//wait the slide motors pulse time
+          digitalWrite(SLIDEADVANCERELAY,HIGH);// turn the slide arms relay off, we only need a pulse
+          // now we are done
           Serial.println(doneMsg);
           Serial.println(pushRunMsg);
           //slideCounter = 0; //reset the slide counter
@@ -438,7 +443,7 @@ void loop()
           }
           updateDisplay(); 
           //digitalWrite(LEDLAMPRELAY, HIGH); // Turn OFF the LED lamp        
-          Serial.println(F("LED lamp OFF"));
+          //Serial.println(F("LED lamp OFF"));
           while (digitalRead(RUNPB)== HIGH)
             {
             //wait for run button to be pushed to exit to wait state
