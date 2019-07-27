@@ -38,7 +38,9 @@ The BTSR will exhibit these characteristics when working properly:
   - Mount and align the phone by:
      - Manually insert the target slide into the projector using the slide arm
      - Insert the phone in its mounting postion
-     - Open the phones camera app and verify that the shutter works by pressing the BT shutter release. Take a test picture of the target slide.
+     - Open the phones camera app and verify that the shutter works by pressing the BT shutter release. 
+     - Zoom in the camera until the picture nearly fills the viewfinder. Leave a small black outline around the target
+     - Take a test picture of the target slide.
   - Insure that the slide trays gear is properly in the track and the arm is fully inserted while flush against the front of the tray
   - Do not put the arm at position 1 but rather just in front of the tray fully into the home position.
 
@@ -65,14 +67,18 @@ TBD
 The controller will always be in the wait mode when not in another mode. Exit the Wait mode by pressing the Run button. The controller will always return to the wait mode when the run button is pushed after completing an activity in any other state
 
 ### **Auto Mode:**  
-#### **Setting the starting slide # (not yet implemented) **
-- Before pressing Run you can set an initial slide # by using the UP/DWM buttons. The UP/DWN buttons will increment/decrement the slide #. The cycle will start at 1 unless another # is entered.
+#### **Setting the starting slide # **
+
+- Before pressing Run you can set an initial slide # by using the UP/DWM buttons. The UP/DWN buttons will increment/decrement the slide #. The cycle will start at 1 unless another # is entered. 
+- Pushing and holding the UP/DWN switch will auto increment the slide #.
+- The slide # will be constrained between 1 and the max slide tray size as set by the 36/100 switch.
 - If you want to start on a slide that is other than the first slide:
   - Position the tray such that the slide prior to the slide you want to start is line with the slide arm
   - Push the slide arm and associated slide into the home position. 
   - Set the slide # by incrementing decrementing using the UP/DWN switch
   - Press run, the slide copier will cycle through all the remaining slides until the end of tray
-- If you want to start at slide #1 position the tray as described above (INSERTING TRAYS) and press the run without incrementing the slide #. The default slide setting is #1.
+- If you want to start at slide #1 position the tray as described above (INSERTING TRAYS) press the run without incrementing the slide #. The default slide setting is #1.
+
 #### **Starting the auto cycle**
 - Pressing the Run button while the Auto/Man switch is in the AUTO postion will cause the controller to enter the Auto (capture) mode.
 - The Auto mode will cycle through all of a trays slides starting at the initial slide # and continuing to the end of the tray (based on the 36/100 switches postion).
@@ -113,6 +119,13 @@ TRAY MISSING: the controller detected that a slide tray is not installed. Instal
 TRAY JAM: Indicates that something inhibited the slide arm from inserting the slide into the projector within the expected time. Carefully pull the slide arm out of the projector pulling the slide back into the tray. Remove the tray, check the slide in the tray and reload the tray starting at the appropiate position.
 
 ## **TROUBLESHOOTING**
-TBD
+If the camera does not take pictures:
+- Check that the camera app is open
+- Check that the phones BT is enabled and paired with the BTSR
+If the controllers slide # and the postion of the tray are out of sync
+- Check that you started the slide tray properly. See instructions above
+- If you set the starting slide # to other than 1 insure that you are starting the auto cycle with the arm inserted 1 slide sooner than the # you selected.
+
+
 
 
