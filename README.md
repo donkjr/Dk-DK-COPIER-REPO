@@ -67,8 +67,7 @@ TBD
 The controller will always be in the wait mode when not in another mode. Exit the Wait mode by pressing the Run button. The controller will always return to the wait mode when the run button is pushed after completing an activity in any other state
 
 ### **Auto Mode:**  
-#### **Setting the starting slide # **
-
+#### **Setting the starting slide #**
 - Before pressing Run you can set an initial slide # by using the UP/DWM buttons. The UP/DWN buttons will increment/decrement the slide #. The cycle will start at 1 unless another # is entered. 
 - Pushing and holding the UP/DWN switch will auto increment the slide #.
 - The slide # will be constrained between 1 and the max slide tray size as set by the 36/100 switch.
