@@ -92,13 +92,14 @@ Version Control
                     You should be able to enter the Test state irrespective of sensor conditions. 
                     After all the test state tests the sensors!      
  7/25 Playing with N++
-					Editing in N++
-					Again editing
- 
+					        Editing in N++
+					        Again editing
+ 7/27 V2.3 Branch
+                Added set starting slide # code 
  Known Bugs-----
   Open   7/14:    
                   The shutter activates as the relay turns off therefore the shutter wait time can be shortened
-                  If the controller it on and the shutter is already connected when it initializes it takes a picture.
+                  If the controller is on and the shutter is already connected when it initializes it takes a picture.
                   Turn off the BT by aserting a long shutter release, or leave this alone? 
                   
  **************************************************************************/
@@ -110,7 +111,7 @@ Version Control
 
 #define SCREEN_WIDTH 128     // OLED display width, in pixels
 #define SCREEN_HEIGHT 64     // OLED display height, in pixels
-#define VERSION 2.2          // version # for displaying
+#define VERSION 2.3          // version # for displaying
 
 // ----- Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)-------
 #define OLED_RESET     -1  // Reset pin # (or -1 if sharing Arduino reset pin). [Was set to 4 which is being used by tray sise sw]
@@ -122,61 +123,6 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // The 128x64 pixel display can display 10 x 5 pixel characters that are 2x the normal height.
 // There are 4 lines of 2x size characters
 
-
-/* OPERATORS MANUAL 
-
-DISPLAY
-Display format for 128 x 64 pixel display
-  There are 4 lines of 10 characters each
-  The first line displays the controllers MODE
-  The second line displays the Slide Counter value
-  The third line displays status depending on the state of the controller
-  The forth line displays requested actions based on the state of the controller    
-
-Setting up:
-            Turn on the projector by rotating the Lamp knob, the fan will come on.
-            Turn on the controller, the lamp will blink as the controller initializes then stay on 
-            The shutter will connect to the phone just before the lamp blinks
-            Mount and align the phone by manually inserting the target slide into the projector
-            Open the phones camera app and verify that the shutter works by pressing the shutter release on the BT shutter
-            Note: the shutter will shut down after xx seconds of inactivity or when the phone disconnects BT.
-            To reconnect the shutter press and hold the shutter button for 3 sec to reconnect.
-            The shutter will blink every 5-6 seconds while connected
-            Insure that the slide tray is properly in the gear track and the arm is fully in flush against the front of the tray
-            Do not put the arm at position 1 but rather just in front of the tray
-Initialization: 
-            The OLED display will show the name and release
-            The BT shutter will initialize (LED on shutte blinks blue & red)
-            The projectors led lamp will blink at then end of initialization
-Wait Mode:  the controller will be in the wait mode when not in another mode. Exit the Wait mode by pressing the Run buttion,
-            the controler will return to the wait mode when the run button is pushed after completing any other state
-Auto Mode:  pressing the Run button while the Auto/Man sw it in the AUTO postion will enter the Auto capture mode.
-            The Auto mode will cycle through an entire tray (based on [ostion of 36/100 sw) without stopping.
-            The Auto mode can be exited by pushing the Run button while in the Run state will cause the controller to exit to the WAIT state 
-            The controller will start with slide 0 and capture photos until the end of the tray which is either 36 or 100. 
-MAN Mode:   Pressing the Run button while the Auto/Man sw is in the MAN postion will enter the MAN capture mode.
-            The contoller will execute one capture cycle for every press of the RUN button.
-            Switching the AUTO/MAN sw to AUTO while in the MAN mode will exit the Man mode.
-
-CONTROL PANEL
-Run button:       The run button is used to exit the wait mode, start the Auto cycle. Single cycle in the MAN mode and return to the WAIT state . 
-UP/DWN:           The up down switch increases or decreases the slide counter value when in the slide setting mode
-AUTO/MAN switch:  Select the automatic capture mode (AUTO) or the single cycle mode (MAN)
-36/100 switch:    Sets the tray size value. 36 is for linear trays and 100 is for circular trays
-
-Debug SW: sets the TEST mode. When the debug sw is on pushing the Run PB will cause the controller to enter the Testing state.
-
-Sensors: 
-TRAYPRESENTSW:    Indicates that a round or long tray is placed in the projector.
-                  This switch is checked before any state (except debug) is executed
-SLIDEARMHOMESW:   Indicates that the slide arm is fully inserted into the projector. 
-                  This sensor is used to detect jams by checking this switch after the required time for the slide arm to cycle
-
-ERRORS:
-TRAY MISSING: the controller detected that a slide tray is not installed 
-
-
-*/
 
 // Character and line Display Constants
 //2X character dimensions
@@ -227,8 +173,8 @@ TRAY MISSING: the controller detected that a slide tray is not installed
 
 // DISPLAY STRING CONSTANTS; predefine strings to use as display messages
 // These are string pointers (char*) that point to the start of strings
-char* titleMsg ="DKDK SlideCopier";// missing space is on purpose for formatting
-char* versionMsg = "V2.1";
+char* titleMsg ="DK^2 SlideCopier";// missing space is on purpose for formatting
+char* versionMsg = "V2.3";
 char* readyMsg ="RDY!";
 
 //Status line messages
@@ -251,6 +197,7 @@ char* testRelayMsg = "Relay:";
 char* lampRelayMsg = "Lamp";
 char* shutterRelayMsg = "Shutter";
 char* cycleRelayMsg = "Cycle";
+char* setSlideNoMsg = "Chg slide#";
 
 //Mode field messages
 char* runModeMsg = "RUN";
@@ -262,11 +209,11 @@ char* testModeMsg = "TEST";
 char* errorModeMsg = "EROR";
 
 // these are string pointer variables used to dynamically update the display
-char* modeDisplay; // writing string pointer to here updates Mode area of display
-char* statusDisplayLine1; //writing string pointer to here updates STATUS area of display
-char* statusDisplayLine2; // writing string pointer to here updates ERROR area of display
+char* modeDisplay; 			// writing string pointer to here updates Mode area of display
+char* statusDisplayLine1; 	//writing string pointer to here updates STATUS area of display
+char* statusDisplayLine2; 	// writing string pointer to here updates ERROR area of display
 
-// pointers used by the test state
+// pointers used by the test state to display 
 char* displayLine1;
 char* displayLine2;
 char* displayLine3;
@@ -279,14 +226,14 @@ int slideCounter =0;
 int slideTraySize = 0;
 
 // delays for slide insertion cycle
-int slideArmCyclePulse = 1000;// time the cycle relay is ON
+int slideArmCyclePulse = 1000;	// time the cycle relay is ON
 int slideArmReturnDelay = 1400;
 int slideSettleDelay = 1000;
 
 //delays for BT shutter 
-int shutterPulse = 1000;      // time the shutter release needs to be on to take a picture
-int slideUploadDelay =1000;   // time for the camera to be ready to take another photo
-int shutterConnect = 3000; // time the sutter release is pushed to connect to phone 
+int shutterPulse = 1000;      	// time the shutter release needs to be on to take a picture
+int slideUploadDelay =1000;   	// time for the camera to be ready to take another photo
+int shutterConnect = 3000; 		// time the sutter release is pushed to connect to phone 
 
 //Misc variables
 int vertCharSize = 0;
@@ -409,29 +356,28 @@ void loop()
              updateDisplay();
              Serial.println(pushRunMsg);
              while (digitalRead(RUNPB))
-              { //stay here waiting to exit while the run button is not pushed
-               
+              { //stay here waiting to exit while the run button is not pushed 
                 //Serial.println(F("Waiting for run butn"));
-              if (!digitalRead(AUTOMODESW))
-                { //if in automode set that state
-                  //Serial.println(F("Automode Set"));
-                  state = AUTOCYCLE; // if the Auto/Manual switch is in Auto go to automatic cycle
-                }
-              else if (digitalRead(AUTOMODESW))  
-              //else if (AUTOMODESW)// WRONG!
-                {//if not in autmode check for manual mode and set that state
-                 state = MANCYCLE; // if the Auto/manual switch is Manual set the manual state
-                }
+				  if (!digitalRead(AUTOMODESW))
+					{ //if in automode set that state
+					  //Serial.println(F("Automode Set"));
+					  state = AUTOCYCLE; // if the Auto/Manual switch is in Auto go to automatic cycle
+					}
+				  else if (digitalRead(AUTOMODESW))  
+				  //else if (AUTOMODESW)// WRONG!
+					{//if not in autmode check for manual mode and set that state
+					 state = MANCYCLE; // if the Auto/manual switch is Manual set the manual state
+					}
               }  //Exit here when run button pushed 
               delay(debounceDelay1); // wait for switch to stop bouncing
               if(digitalRead(TRAYPRESENTSW))
-              {//if tray is not inserted go to tray error state
-                state = INSERTTRAY;
-              }
+				{//if tray is not inserted go to tray error state
+					state = INSERTTRAY;
+				}
               if(!digitalRead (DEBUGSW))
-                {//if the debug switch is on go to test state
-                  state=TEST;
-                }  
+				{//if the debug switch is on go to test state
+				state=TEST;
+				}  
               
               Serial.print(F("Going to mode: "));
               Serial.println(state); 
@@ -446,12 +392,15 @@ void loop()
         modeDisplay = autoCycleModeMsg; 
         statusDisplayLine1 = pushRunMsg;
         statusDisplayLine2 = toStartMsg; // display Run Message
-        updateDisplay();
-        trayJam = false; // reset and tray jams
-        while (digitalRead(RUNPB))
+        updateDisplay(); // updates the above values to the display
+        trayJam = false; // reset tray jams
+        slideCounter = 1; // initialize the slide counter
+		while (digitalRead(RUNPB))
         {
         //Wait for Run Button pushed to start capturing photos
-        }
+		//Meanwhile allow the starting slide # to be changed
+        setSlideNo(); 
+		}
         delay(debounceDelay1); //wait for RUN switch to stop bounceing       
         digitalWrite(LEDLAMPRELAY, LOW); //Turn on the LED lamp        
         Serial.println(F("LED lamp ON"));
@@ -459,7 +408,7 @@ void loop()
         statusDisplayLine1 = captureMsg; //
         statusDisplayLine2 = runstopsMsg; // display Run = Stop Message
         updateDisplay();
-        for (int i=1; i<=slideTraySize && trayJam == false; i++)
+        for (int i=slideCounter; i<=slideTraySize && trayJam == false; i++)
          {// cycle through all the slides without stopping except for a jam
             slideCounter = i; // 
             updateDisplay();
@@ -691,8 +640,46 @@ void loop()
 
 //---------------------------------------- FUNCTIONS -------------------------------
 
-/*
- * Relay testing
+/* setSlideNo
+Allows the operator to set the starting slide # before starting Auto Capture 
+Parameters:
+Input: none
+Return: the starting slide #
+*/
+
+int setSlideNo()
+	{
+
+	if (!digitalRead(CNTUPMOMSW))
+		{
+		++slideCounter;
+		delay(debounceDelay1);
+		}
+	else if(!digitalRead(CNTDWNMOMSW))
+		{
+		--slideCounter;
+		delay(debounceDelay1);
+		}
+
+	// Keep the slidecount within limits
+	if (slideCounter > slideTraySize)
+		{
+		slideCounter = slideTraySize;	
+		}
+	if (slideCounter < 1)
+		{
+		slideCounter = 1;	
+		}
+	
+	// update the display values mainly the slide counter
+	modeDisplay = autoCycleModeMsg; 
+	statusDisplayLine1 = pushRunMsg;
+	statusDisplayLine2 = toStartMsg; // display Run Message
+	updateDisplay(); // updates the above values to the display
+	return(slideCounter);
+	}
+
+/* Relay testing
  * Function prompts to turn on and then prompts to turn off a particular relay
  * Input parameters: 
  * char* relayMsg: passed name of the relay name
@@ -796,8 +783,6 @@ void waitForRun()
 }
 
 
-
-
 /* Capture photo
 The  capture function is used by both AUTO and MANUAL capture modes to process the capture of ONE photo
 This fuction performs the process needed to exchange a slide and capture the picture on the phone
@@ -866,6 +851,13 @@ int capturePhoto()
 }
 // DISPLAY FUNCTIONS
 //----------------------- Update OLED display -----
+// Updates the OLED display by writing:
+//Mode
+//Slide # 
+//Display line 1 & 2
+//From the associated variables
+//Parameters: none
+
   void updateDisplay()
   {
     display.clearDisplay();
@@ -921,10 +913,6 @@ void displayInputPorts()
     display.print(displayLine4);
     display.display(); 
 }
-
-
-
-
 
 // Print the display values to the console
 void printDisplayValues()
