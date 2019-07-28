@@ -135,6 +135,10 @@ If the controllers slide # and the postion of the tray are out of sync
 - Check that you started the slide tray properly. See instructions above
 - If you set the starting slide # to other than 1 insure that you are starting the auto cycle with the arm inserted 1 slide sooner than the # you selected.
 
+## **SERIAL CONSOLE**
+A serial console is available that provides detailed controller and process information.
+To access the serial console connect a device (computer, tablet, phone) with a runnning serial monitor to the serial port on the nano.
+Start the serial monitor and set the baud rate to 57600
 
 
 
