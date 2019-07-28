@@ -123,13 +123,14 @@ Slide Home Switch:   Located on the projectors front surface to the left of the 
 
 ## **ERRORS**
 
-TRAY MISSING: the controller detected that a slide tray is not installed. Install a tray. 
-TRAY JAM: Indicates that something inhibited the slide arm from inserting the slide into the projector within the expected time. Carefully pull the slide arm out of the projector pulling the slide back into the tray. Remove the tray, check the slide in the tray and reload the tray starting at the appropiate position.
+- TRAY MISSING: the controller detected that a slide tray is not installed. Install a tray. 
+- TRAY JAM: Indicates that something inhibited the slide arm from inserting the slide into the projector within the expected time.    Carefully pull the slide arm out of the projector pulling the slide back into the tray. Remove the tray, check the slide in the tray and reload the tray starting at the appropiate position.
 
 ## **TROUBLESHOOTING**
 If the camera does not take pictures:
 - Check that the camera app is open
 - Check that the phones BT is enabled and paired with the BTSR
+
 If the controllers slide # and the postion of the tray are out of sync
 - Check that you started the slide tray properly. See instructions above
 - If you set the starting slide # to other than 1 insure that you are starting the auto cycle with the arm inserted 1 slide sooner than the # you selected.
