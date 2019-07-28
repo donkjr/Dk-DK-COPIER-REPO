@@ -1,12 +1,13 @@
 # **DKDK SLIDE COPIER OPERATORS MANUAL**
 
  **Overview**
- This code controls a modified slide projector used to copy slides to a mobile phones camera.
- An Aarduino NANO is used as the microprocessor.
- The Arduino interfaces with a series of relays and mimics the slides remote control pad.
+ A modified slide projector is used to copy slides to a mobile phones camera.
+ An Arduino NANO is used as the microprocessor.
+ The Arduino interfaces with a series of relays mimicing the slides remote control pad.
  Various relays interface with the Nano and subsequently with the remote control socket on the projector.
- One relay interfaces with the capture button on an external BT selfie radio to remotely command the phone to take a picture.
+ One relay interfaces with the shutter release button on an external BT selfie radio to remotely command the phone to take a picture.
  The Nano also interfaces with an operator control panel which has operator switches and a I2C OLED display.
+ The controller controls the projector and phone while in one of 4 modes; Wait, Auto, Manual as explained below.
 
 ### **DISPLAY FORMAT**
 The OLED display provides information about the state the controller is executing, the slide # currently in process, the status of the operation and instructions to the operator:
@@ -17,31 +18,35 @@ The OLED display provides information about the state the controller is executin
   - The fourth line displays requested actions based on the state of the controller    
 
 ### **BT SELFIE SHUTTER**
-The controller communicates with the phone via a MOONI BT connected Selfie Radio (BTSR). The selfie radio is battery operated and provides a button on its face called "shutter release". The shutter release interfaces with the phones camera application to "snap" a picture.
+The controller communicates with the phone via a MOONI BT connected Selfie Radio (BTSR). The selfie radio is battery operated and provides a button on its face called "shutter release". The BTSR interfaces with the phones camera application to "snap" a picture.
 The controller is wired into the BTSR and takes a picture by simulating the press of the shutter release button (SRB).
 The BTSR must initially be paired with the phone. From then on the BTSR will connect without pairing
+The BTSR can be paired with a phone by pushing and holding the shutter release button for 3 sec.
+Once paired there is no need to pair the BTSR every time it is used, simply push the sutter release to wake it up for connection
 The BTSR will exhibit these characteristics when working properly:
 - The led embeded in its face will blink every 5-6 seconds when connected 
-- It will shut down after xx seconds of inactivity.
+- It will shut down after ?? seconds of inactivity.
 - It will shut down if the phone is disconencted from BT
 - It will automatically connect to the phone (if its previously paired) when the SRB is pushed
 - If the BTRS gets disconnected, press and hold the SRB for 3 sec to reconnect.
+- If there is a need to run the system without taking picture turn off the phones BT. If the led on the BTSR is blinking (red/blue) insure the BTSR is off by pushing and holding the shutter release button until the LED flashes off.
 
 ### **SETTING UP THE SYSTEM**
+  - Inside the upper cover, insure that the rectangular white plastic difusser is installed in front of the last lens.
   - With the power plugged in, turn on the projector by rotating the Lamp knob clockwise, the fan will come on.
-  - Insure that the 12 VDC plug on the front of the controller in inserted and AC power is applied to power supply
+  - Insure that the 2.5mm 12 VDC plug on the front of the controller in inserted and AC power is applied to the power supply
   - Turn on the controllers inline DC power switch and it will initialize:
-  			- The OLED will display the name and version of the controllers micorcode
+  			- The OLED will display the name and version of the controllers microcode
      - The OLED will display the initial screen and enter the WAIT mode
-     - The lamp will blink at the end of the controllers initialialization and then stay on 
      - The shutter will connect to the phone just before the lamp blinks
+     - The lamp will blink at the end of the controllers initialialization and then stay on 
   - Mount and align the phone by:
-     - Manually insert the target slide into the projector using the slide arm
+     - Manually inserting the target slide into the projector using the slide arm
      - Insert the phone in its mounting postion
      - Open the phones camera app and verify that the shutter works by pressing the BT shutter release. 
      - Zoom in the camera until the picture nearly fills the viewfinder. Leave a small black outline around the target
      - Take a test picture of the target slide.
-  - Insure that the slide trays gear is properly in the track and the arm is fully inserted while flush against the front of the tray
+  - Insure that the slide trays gear is properly in the feeder gear and the arm is fully inserted while flush against the front of the tray
   - Do not put the arm at position 1 but rather just in front of the tray fully into the home position.
 
 ### **SYSTEM INTITIALIZATION** 
@@ -51,24 +56,28 @@ The BTSR will exhibit these characteristics when working properly:
 
 ## INSERTING TRAYS
 ### **Inserting a Long Tray**
+The long tray holds 36 slides and it loaded horizontally into the projector
   - Insert the tray with the slide # facing up and toward the back of the projector
   - Postion the tray so the slide arm is fully home in postion in front of the tray. Do not postion adjacent to the 1st slide
-  - The slide arm should be in front of the tray not inserted through the tray
+  - The slide arm should be in front of the tray and in the home postion not inserted through the tray at slide position 1
   - Push the slide arm forward into the projector without a slide, this is the home postion
   - This position allows the slide arm to retract and then insert the 1st slide into the projector.
   - If the slide arm and tray is not started in the proper position the slide count will be off by one
+  - [Image of slide home position for long trays](https://photos.app.goo.gl/BfsqJRe9UNDPxcKu9)
 
 ### **Inserting a Round Tray**
-TBD
+The round tray holds 100 slides and is loaded vertically in the tray.
+- Load the round tray with the slide arm fully out and opposite slide position 100. 
+- Push the slide arm into the projector resulting in slide arm and slide 100 being in the home postion
+- Start the desired cycle## 
 
-## **CONTROLLER MODES**
-
+**CONTROLLER MODES**
 ### **Wait Mode:**  
 The controller will always be in the wait mode when not in another mode. Exit the Wait mode by pressing the Run button. The controller will always return to the wait mode when the run button is pushed after completing an activity in any other state
 
 ### **Auto Mode:**  
 #### **Setting the starting slide #**
-- Before pressing Run you can set an initial slide # by using the UP/DWM buttons. The UP/DWN buttons will increment/decrement the slide #. The cycle will start at 1 unless another # is entered. 
+- Before pressing Run you can set an initial slide # by using the UP/DWM buttons. The UP/DWN buttons will increment/decrement the slide #. The auto cycle will start at 1 unless another # is entered. 
 - Pushing and holding the UP/DWN switch will auto increment the slide #.
 - The slide # will be constrained between 1 and the max slide tray size as set by the 36/100 switch.
 - If you want to start on a slide that is other than the first slide:
@@ -76,9 +85,9 @@ The controller will always be in the wait mode when not in another mode. Exit th
   - Push the slide arm and associated slide into the home position. 
   - Set the slide # by incrementing decrementing using the UP/DWN switch
   - Press run, the slide copier will cycle through all the remaining slides until the end of tray
-- If you want to start at slide #1 position the tray as described above (INSERTING TRAYS) press the run without incrementing the slide #. The default slide setting is #1.
+- If you want to start at slide #1 position the tray as described above (INSERTING TRAYS) press the run without incrementing the slide #. The default slide starting setting is #1.
 
-#### **Starting the auto cycle**
+#### **Starting the auto cycle mode**
 - Pressing the Run button while the Auto/Man switch is in the AUTO postion will cause the controller to enter the Auto (capture) mode.
 - The Auto mode will cycle through all of a trays slides starting at the initial slide # and continuing to the end of the tray (based on the 36/100 switches postion).
 - The Auto mode can be exited to the Wait state by pushing and holding the Run button while in the Auto state. 
@@ -87,7 +96,7 @@ The controller will always be in the wait mode when not in another mode. Exit th
 ### **Manual Mode:**   
 - Pressing the Run button while the Auto/Man switch is in the MAN postion will cause the controller to enter the MAN capture mode.
 - The contoller will execute one capture cycle for every press of the RUN button.
-- in this mode it is the operators responsibility to postion the slide tray as needed to access the desired slide(s).
+- In this mode it is the operators responsibility to postion the slide tray as needed to access the desired slide(s).
 - Switching the AUTO/MAN sw to AUTO while in the MAN mode will exit the Man mode.
 
 ## **CONTROL PANEL DESCRIPTIONS**
