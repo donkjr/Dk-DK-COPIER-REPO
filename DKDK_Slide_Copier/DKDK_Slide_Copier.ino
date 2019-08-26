@@ -499,7 +499,7 @@ void loop()
         statusDisplayLine2 = pushRunMsg; // display push Run button message
         statusDisplayLine1 = doneMsg; //display Done message
         updateDisplay();                 
-        digitalWrite(LEDLAMPRELAY, HIGH); // Turn OFF the LED lamp        
+        //digitalWrite(LEDLAMPRELAY, HIGH); // Turn OFF the LED lamp [removed as bug]       
         Serial.println(F("LED lamp OFF"));              
         while (digitalRead(RUNPB)== HIGH)
           {
